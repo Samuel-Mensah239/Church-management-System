@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zion Stronghold Ministries Portal</title>
+    <style>
+        :root {
+            --fire-gold: #ffae00;
+            --deep-purple: #2a0845;
+            --royal-blue: #000428;
+            --white: #ffffff;
+            --glass: rgba(0, 0, 0, 0.85);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--white);
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('church-logo.jpeg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 4px solid var(--fire-gold);
+        }
+
+        h1 { 
+            font-size: 3rem; 
+            margin: 0; 
+            color: var(--white);
+            text-shadow: 0 0 15px rgba(255, 174, 0, 0.8);
+            letter-spacing: 3px;
+        }
+
+        .motto {
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #ff4e50;
+            text-transform: uppercase;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 174, 0, 0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        }
+
+        h2 { color: var(--fire-gold); border-bottom: 1px solid var(--fire-gold); padding-bottom: 10px; }
+        
+        .scripture {
+            font-style: italic;
+            color: #add8e6;
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+
+        .time-box {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--fire-gold);
+            text-shadow: 3px 3px 6px black;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 50px;
+            background: #d32f2f;
+            font-weight: bold;
+            margin-top: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(0,0,0,0.9);
+            margin-top: 50px;
+            border-top: 2px solid var(--fire-gold);
+        }
+
+        button {
+            background: var(--fire-gold);
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            color: #000;
+            text-transform: uppercase;
+        }
+
+        button:hover { background: #ffca28; transform: translateY(-2px); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: var(--deep-purple);
+            margin: 5% auto;
+            padding: 30px;
+            border: 2px solid var(--fire-gold);
+            width: 85%;
+            max-width: 800px;
+            border-radius: 15px;
+        }
+
+        .close { color: #fff; float: right; font-size: 35px; font-weight: bold; cursor: pointer; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; color: white; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { color: var(--fire-gold); }
+
+        input, select {
+            width: 95%; padding: 12px; margin: 10px 0;
+            border-radius: 5px; border: 1px solid var(--fire-gold);
+            background: rgba(255,255,255,0.1); color: white;
+        }
+        .action-btn { background: #28a745; color: white; margin-bottom: 5px; }
+        .export-btn { background: #007bff; color: white; margin-bottom: 20px; }
+        .delete-btn { background: #d32f2f; padding: 6px 12px; font-size: 12px; width: auto; color: white; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ZION STRONGHOLD MINISTRIES</h1>
+        <div class="scripture">(Ephesians 6:10-18)</div>
+        <div class="motto">"Ever Praying" • "Ever Winning"</div>
+    </header>
+
+    <div class="container">
+        
+        <div class="card" style="text-align: center;">
+            <div id="clock" class="time-box">00:00:00</div>
+            <h3 id="day-name" style="margin: 5px 0; color: #fff;">...</h3>
+            <div id="live-indicator"></div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Ministry Leadership</h2>
+                <p><strong>Apostle Dr. Samuel Vincent Ansah</strong><br>
+                <small>General Overseer & Chairman (GCCI)</small></p>
+                <p><strong>Mrs. Paulina Ansah</strong><br>
+                <small>Church Administrator & Oversight</small></p>
+                <p><strong>Bro. Benedict</strong><br>
+                <small>Executive Coordinator & Operations</small></p>
+            </div>
+
+            <div class="card">
+                <h2>Service Schedule</h2>
+                <ul style="list-style:none; padding:0;">
+                    <li style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.1);"><strong>Sunday:</strong> 8:30 AM — 11:30 AM</li>
+                    <li style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.1);"><strong>Monday:</strong> 7:00 PM — 8:30 PM</li>
+                    <li style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.1);"><strong>Wednesday:</strong> 7:00 PM — 8:30 PM</li>
+                    <li style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.1);"><strong>Friday:</strong> 7:00 PM — 9:00 PM</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>Management Console</h2>
+                <p>Authorized access for Bro. Benedict and Admin Team:</p>
+                <button onclick="openModal('members')">Member Management</button>
+                <button onclick="openModal('finance')">Tithes & Offerings</button>
+                <button onclick="openModal('prayers')">Prayer Request Logs</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="membersModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('membersModal')">&times;</span>
+            <h2>Member Database</h2>
+            <input type="text" id="mName" placeholder="Full Name">
+            <input type="text" id="mPhone" placeholder="Phone Number">
+            <button class="action-btn" onclick="saveData('members')">Add Member</button>
+            <button class="export-btn" onclick="exportToCSV('members')">Export to Excel (.CSV)</button>
+            <table id="membersTable">
+                <thead><tr><th>Name</th><th>Phone</th><th>Action</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="financeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('financeModal')">&times;</span>
+            <h2>Financial Records</h2>
+            <input type="text" id="fName" placeholder="Donor Name">
+            <input type="number" id="fAmount" placeholder="Amount (₵)">
+            <select id="fType">
+                <option value="Tithe">Tithe</option>
+                <option value="Offering">Offering</option>
+                <option value="Seed">Special Seed</option>
+            </select>
+            <button class="action-btn" onclick="saveData('finance')">Record Payment</button>
+            <button class="export-btn" onclick="exportToCSV('finance')">Export to Excel (.CSV)</button>
+            <table id="financeTable">
+                <thead><tr><th>Name</th><th>Type</th><th>Amount</th><th>Action</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="prayersModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('prayersModal')">&times;</span>
+            <h2>Prayer Request Log</h2>
+            <input type="text" id="pName" placeholder="Name">
+            <input type="text" id="pDetail" placeholder="Prayer Point">
+            <button class="action-btn" onclick="saveData('prayers')">Save Request</button>
+            <button class="export-btn" onclick="exportToCSV('prayers')">Export to Excel (.CSV)</button>
+            <table id="prayersTable">
+                <thead><tr><th>Name</th><th>Request</th><th>Action</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>Zion Stronghold Ministries &copy; 2026</p>
+        <div class="motto" style="font-size: 0.9rem;">"Ever Praying" • "Ever Winning"</div>
+    </footer>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const day = now.getDay(); 
+            document.getElementById('clock').textContent = now.toLocaleTimeString();
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            document.getElementById('day-name').textContent = days[day];
+
+            let isLive = false;
+            let currentService = "";
+            const currentTimeDecimal = hours + (minutes / 60);
+
+            if (day === 0 && currentTimeDecimal >= 8.5 && currentTimeDecimal <= 11.5) {
+                isLive = true; currentService = "SUNDAY SERVICE LIVE";
+            } else if ((day === 1 || day === 3) && currentTimeDecimal >= 19 && currentTimeDecimal <= 20.5) {
+                isLive = true; currentService = "PRAYER SERVICE LIVE";
+            } else if (day === 5 && currentTimeDecimal >= 19 && currentTimeDecimal <= 21) {
+                isLive = true; currentService = "FRIDAY POWER PRAYER LIVE";
+            }
+
+            const indicator = document.getElementById('live-indicator');
+            if (isLive) {
+                indicator.innerHTML = `<div class="status-pill">${currentService}</div>`;
+            } else {
+                indicator.innerHTML = `<div style="color: #bbb; margin-top:10px;">No Service in Progress</div>`;
+            }
+        }
+
+        function openModal(type) { 
+            document.getElementById(type + 'Modal').style.display = "block"; 
+            loadData(type);
+        }
+
+        function closeModal(modalId) { 
+            document.getElementById(modalId).style.display = "none"; 
+        }
+
+        function saveData(type) {
+            let data = JSON.parse(localStorage.getItem(type)) || [];
+            let entry = {};
+            
+            if(type === 'members') {
+                entry = { name: document.getElementById('mName').value, phone: document.getElementById('mPhone').value };
+                if(!entry.name || !entry.phone) return alert("Please fill Name and Phone");
+            } else if(type === 'finance') {
+                entry = { name: document.getElementById('fName').value, amount: document.getElementById('fAmount').value, type: document.getElementById('fType').value };
+                if(!entry.name || !entry.amount) return alert("Please fill Name and Amount");
+            } else if(type === 'prayers') {
+                entry = { name: document.getElementById('pName').value, detail: document.getElementById('pDetail').value };
+                if(!entry.name || !entry.detail) return alert("Please fill Name and Prayer Point");
+            }
+
+            data.push(entry);
+            localStorage.setItem(type, JSON.stringify(data));
+            loadData(type);
+            document.querySelectorAll(`#${type}Modal input`).forEach(i => i.value = '');
+        }
+
+        function loadData(type) {
+            let data = JSON.parse(localStorage.getItem(type)) || [];
+            let tbody = document.querySelector(`#${type}Table tbody`);
+            tbody.innerHTML = "";
+            
+            data.forEach((item, index) => {
+                let row = "";
+                if(type === 'members') row = `<td>${item.name}</td><td>${item.phone}</td>`;
+                if(type === 'finance') row = `<td>${item.name}</td><td>${item.type}</td><td>₵${item.amount}</td>`;
+                if(type === 'prayers') row = `<td>${item.name}</td><td>${item.detail}</td>`;
+                tbody.innerHTML += `<tr>${row}<td><button class="delete-btn" onclick="deleteItem('${type}', ${index})">Delete</button></td></tr>`;
+            });
+        }
+
+        function deleteItem(type, index) {
+            let data = JSON.parse(localStorage.getItem(type));
+            data.splice(index, 1);
+            localStorage.setItem(type, JSON.stringify(data));
+            loadData(type);
+        }
+
+        function exportToCSV(type) {
+            let data = JSON.parse(localStorage.getItem(type)) || [];
+            if (data.length === 0) return alert("No data to export!");
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Define headers
+            if(type === 'members') csvContent += "Name,Phone\n";
+            if(type === 'finance') csvContent += "Name,Type,Amount\n";
+            if(type === 'prayers') csvContent += "Name,Request\n";
+
+            // Add rows
+            data.forEach(item => {
+                let row = "";
+                if(type === 'members') row = `"${item.name}","${item.phone}"`;
+                if(type === 'finance') row = `"${item.name}","${item.type}","${item.amount}"`;
+                if(type === 'prayers') row = `"${item.name}","${item.detail}"`;
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Zion_Stronghold_${type}_${new Date().toLocaleDateString()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
